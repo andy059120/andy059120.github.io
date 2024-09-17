@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en,zh-tw,default">
+    <head>
+    <meta charset="utf-8">
+
+    <!-- 添加 favicon -->
+    <!--  <link rel="icon" href="./../../../../../source/favicon.ico"> -->
+    
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/favicon.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+    
+    
+        <link rel="mask-icon" href="/favicon.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>測試文字一 | Andy Chen</title>
+
+
+    <meta name="keywords" content="Test, OOP, FP">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="件導向程式設計是一種以物件為中心的程式設計範疇物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="測試文字一">
+<meta property="og:url" content="https://andy059120.github.io/2024/07/25/new-title/">
+<meta property="og:site_name" content="Andy Chen">
+<meta property="og:description" content="件導向程式設計是一種以物件為中心的程式設計範疇物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-07-25T14:04:21.000Z">
+<meta property="article:modified_time" content="2024-09-17T10:36:00.976Z">
+<meta property="article:author" content="Andy Chen">
+<meta property="article:tag" content="Test">
+<meta property="article:tag" content="OOP">
+<meta property="article:tag" content="FP">
+<meta name="twitter:card" content="summary_large_image">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">Andy Chen</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首頁</a>
+                
+                    <a href="/categories/" class="navbar-menu button">分類</a>
+                
+                    <a href="/tags/" class="navbar-menu button">標籤</a>
+                
+                    <a href="/archives/" class="navbar-menu button">歸檔</a>
+                
+                    <a href="/" class="navbar-menu button">履歷(施工中)</a>
+                
+                    <a href="/about/" class="navbar-menu button">關於我</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首頁</a>
+                
+                    <a href="/categories/" class="dropdown-menu button">分類</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">標籤</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">歸檔</a>
+                
+                    <a href="/" class="dropdown-menu button">履歷(施工中)</a>
+                
+                    <a href="/about/" class="dropdown-menu button">關於我</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        測試文字一
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2024/07/" class="post-meta__date button">2024-07-25</a>
+        
+    <span class="separate-dot"></span><a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" class="button">程式設計</a>
+
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88-OOP"><span class="toc-text">物件導向程式設計 (OOP)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%84%AA%E9%BB%9E"><span class="toc-text">優點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%BB%9E"><span class="toc-text">缺點</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B8%E5%BC%8F%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88-Functional-Programming"><span class="toc-text">函數式程式設計 (Functional Programming)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%84%AA%E9%BB%9E-1"><span class="toc-text">優點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%BB%9E-1"><span class="toc-text">缺點</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AF%94%E8%BC%83"><span class="toc-text">比較</span></a></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88-OOP"><span class="toc-text">物件導向程式設計 (OOP)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%84%AA%E9%BB%9E"><span class="toc-text">優點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%BB%9E"><span class="toc-text">缺點</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B8%E5%BC%8F%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88-Functional-Programming"><span class="toc-text">函數式程式設計 (Functional Programming)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%84%AA%E9%BB%9E-1"><span class="toc-text">優點</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%BB%9E-1"><span class="toc-text">缺點</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AF%94%E8%BC%83"><span class="toc-text">比較</span></a></li></ol>
+    </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>件導向程式設計是一種以物件為中心的程式設計範疇物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包物件為中心的程式設計範疇。其核心概念包</p>
+<h1 id="物件導向程式設計-OOP-vs-函數式程式設計-Functional-Programming"><a href="#物件導向程式設計-OOP-vs-函數式程式設計-Functional-Programming" class="headerlink" title="物件導向程式設計 (OOP) vs 函數式程式設計 (Functional Programming)"></a>物件導向程式設計 (OOP) vs 函數式程式設計 (Functional Programming)</h1><h2 id="物件導向程式設計-OOP"><a href="#物件導向程式設計-OOP" class="headerlink" title="物件導向程式設計 (OOP)"></a>物件導向程式設計 (OOP)</h2><p>物件導向程式設計是一種以物件為中心的程式設計範疇。其核心概念包括：</p>
+<ul>
+<li>**類別 (Class)**：定義物件的藍圖，包含屬性和方法。</li>
+<li>**物件 (Object)**：類別的實例，具有狀態和行為。</li>
+<li>**繼承 (Inheritance)**：子類別可以繼承父類別的屬性和方法。</li>
+<li>**封裝 (Encapsulation)**：物件的內部狀態對外部隱藏，僅透過方法存取。</li>
+<li>**多型 (Polymorphism)**：不同類別的物件可以透過相同的介面互動。</li>
+</ul>
+<h3 id="優點"><a href="#優點" class="headerlink" title="優點"></a>優點</h3><ul>
+<li>模擬現實世界，易於理解和設計。</li>
+<li>支援程式碼重用，減少重複程式碼。</li>
+<li>便於維護和擴充。</li>
+</ul>
+<h3 id="缺點"><a href="#缺點" class="headerlink" title="缺點"></a>缺點</h3><ul>
+<li>初學者可能較難掌握。</li>
+<li>在某些情況下，可能會導致效能開銷。</li>
+</ul>
+<h2 id="函數式程式設計-Functional-Programming"><a href="#函數式程式設計-Functional-Programming" class="headerlink" title="函數式程式設計 (Functional Programming)"></a>函數式程式設計 (Functional Programming)</h2><p>函數式程式設計是一種以函數為中心的程式設計範疇。其核心概念包括：</p>
+<ul>
+<li>**純函數 (Pure Function)**：函數的輸出僅依賴輸入，無副作用。</li>
+<li>**不可變性 (Immutability)**：變數一旦創建就不能更改。</li>
+<li>**高階函數 (Higher-Order Function)**：函數可以作為參數傳遞或作為回傳值。</li>
+<li>**遞迴 (Recursion)**：透過函數自身呼叫來替代迴圈。</li>
+</ul>
+<h3 id="優點-1"><a href="#優點-1" class="headerlink" title="優點"></a>優點</h3><ul>
+<li>更易於推理和測試，減少錯誤。</li>
+<li>支援並行處理，提高效能。</li>
+<li>函數可以作為第一等公民，彈性高。</li>
+</ul>
+<h3 id="缺點-1"><a href="#缺點-1" class="headerlink" title="缺點"></a>缺點</h3><ul>
+<li>可能需要重新學習和適應新的思維方式。</li>
+<li>對某些問題的解決可能不如命令式程式設計直觀。</li>
+</ul>
+<h2 id="比較"><a href="#比較" class="headerlink" title="比較"></a>比較</h2><table>
+<thead>
+<tr>
+<th>特點</th>
+<th>物件導向程式設計 (OOP)</th>
+<th>函數式程式設計 (Functional Programming)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心概念</td>
+<td>類別、物件、繼承、封裝、多型</td>
+<td>純函數、不可變性、高階函數、遞迴</td>
+</tr>
+<tr>
+<td>可讀性</td>
+<td>模擬現實世界，易於理解</td>
+<td>需要適應新的思維方式</td>
+</tr>
+<tr>
+<td>可維護性</td>
+<td>便於維護和擴充</td>
+<td>易於推理和測試</td>
+</tr>
+<tr>
+<td>效能</td>
+<td>可能導致效能開銷</td>
+<td>支援並行處理，提高效能</td>
+</tr>
+<tr>
+<td>適用場景</td>
+<td>適合模擬實際物件的系統</td>
+<td>適合資料處理、併發操作</td>
+</tr>
+</tbody></table>
+<p>這段文字為測試用！</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>Andy Chen
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="https://andy059120.github.io/2024/07/25/new-title/">https://andy059120.github.io/2024/07/25/new-title/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2024-09-17</p></div> 
+    <div class="post-entry__tags"><a href="/tags/Test/" class="post-tags__link button"># Test</a><a href="/tags/OOP/" class="post-tags__link button"># OOP</a><a href="/tags/FP/" class="post-tags__link button"># FP</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/2024/07/27/aw-aw-aw/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            測試文字二
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+     
+    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023&nbsp;-&nbsp;2024 <a href="/">Andy Chen</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('true'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

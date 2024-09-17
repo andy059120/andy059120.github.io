@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en,zh-tw,default">
+    <head>
+    <meta charset="utf-8">
+
+    <!-- 添加 favicon -->
+    <!--  <link rel="icon" href="./../../../../../source/favicon.ico"> -->
+    
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/favicon.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+    
+    
+        <link rel="mask-icon" href="/favicon.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>Git 物件基礎學習筆記 | Andy Chen</title>
+
+
+    <meta name="keywords" content="git">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="這篇文章是我學習 Git 物件基礎的過程，比較細節的那一種，但盡量白話一點。 Blob 和 TreeBlob (Binary Large Object) 是 Git 中最基本的物件，專門用來儲存「檔案的內容」。它代表了一個檔案的具體內容，但不包含檔案的名稱、路徑或權限資訊。Tree 是一種描述「目錄結構」的物件。它負責將檔案、子目錄和它們的相關資訊（如檔名、路徑、權限）組織在一起。 Tree 可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 物件基礎學習筆記">
+<meta property="og:url" content="https://andy059120.github.io/2024/09/17/git_homework/">
+<meta property="og:site_name" content="Andy Chen">
+<meta property="og:description" content="這篇文章是我學習 Git 物件基礎的過程，比較細節的那一種，但盡量白話一點。 Blob 和 TreeBlob (Binary Large Object) 是 Git 中最基本的物件，專門用來儲存「檔案的內容」。它代表了一個檔案的具體內容，但不包含檔案的名稱、路徑或權限資訊。Tree 是一種描述「目錄結構」的物件。它負責將檔案、子目錄和它們的相關資訊（如檔名、路徑、權限）組織在一起。 Tree 可以">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-17T10:23:19.000Z">
+<meta property="article:modified_time" content="2024-09-17T10:36:47.351Z">
+<meta property="article:author" content="Andy Chen">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary_large_image">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">Andy Chen</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首頁</a>
+                
+                    <a href="/categories/" class="navbar-menu button">分類</a>
+                
+                    <a href="/tags/" class="navbar-menu button">標籤</a>
+                
+                    <a href="/archives/" class="navbar-menu button">歸檔</a>
+                
+                    <a href="/" class="navbar-menu button">履歷(施工中)</a>
+                
+                    <a href="/about/" class="navbar-menu button">關於我</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首頁</a>
+                
+                    <a href="/categories/" class="dropdown-menu button">分類</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">標籤</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">歸檔</a>
+                
+                    <a href="/" class="dropdown-menu button">履歷(施工中)</a>
+                
+                    <a href="/about/" class="dropdown-menu button">關於我</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        Git 物件基礎學習筆記
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2024/09/" class="post-meta__date button">2024-09-17</a>
+        
+    <span class="separate-dot"></span><a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" class="button">程式設計</a>
+
+    <span class="separate-dot"></span><a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/git/" class="button">git</a>
+
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Blob-%E5%92%8C-Tree"><span class="toc-text">Blob 和 Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%B2%E5%85%A5%E8%A9%B2%E6%AA%94%E6%A1%88%E5%A4%BE"><span class="toc-text">進入該檔案夾</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-git-ls-tree-%E6%8C%87%E4%BB%A4%E4%BE%86%E5%88%97%E5%87%BA%E6%AA%94%E6%A1%88%E5%92%8C%E5%85%B6%E5%B0%8D%E6%87%89%E7%9A%84-Blob-%E5%92%8C-Tree-%E7%9A%84-SHA-1-%E5%80%BC%EF%BC%8C%E9%80%99%E6%9C%83%E9%A1%AF%E7%A4%BA%E7%95%B6%E5%89%8D%E5%88%86%E6%94%AF%EF%BC%88HEAD%EF%BC%89%E7%9A%84%E6%AA%94%E6%A1%88%E6%B8%85%E5%96%AE%E5%8F%8A%E6%AF%8F%E5%80%8B%E6%AA%94%E6%A1%88%E7%9A%84-Blob-ID"><span class="toc-text">使用 git ls-tree 指令來列出檔案和其對應的 Blob 和 Tree 的 SHA-1 值，這會顯示當前分支（HEAD）的檔案清單及每個檔案的 Blob ID</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%83%B3%E7%9C%8B%E4%B8%80%E5%80%8B-Blob-%E6%AA%94%E6%A1%88%E7%9A%84%E5%85%A7%E5%AE%B9%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-SHA-1-%E5%80%BC%E9%80%B2%E4%B8%80%E6%AD%A5%E6%AA%A2%E6%9F%A5"><span class="toc-text">如果想看一個 Blob 檔案的內容，可以用 SHA-1 值進一步檢查</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%83%B3%E6%9F%A5%E7%9C%8B%E5%AD%90%E7%9B%AE%E9%8C%84%E4%B8%AD%E7%9A%84-Tree%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-SHA-1-%E5%80%BC%E9%80%B2%E4%B8%80%E6%AD%A5%E6%AA%A2%E6%9F%A5"><span class="toc-text">如果想查看子目錄中的 Tree，可以用 SHA-1 值進一步檢查</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Blob-%E5%92%8C-Tree-%E6%98%AF%E5%A6%82%E4%BD%95%E5%90%88%E4%BD%9C%E7%9A%84%EF%BC%9F"><span class="toc-text">Blob 和 Tree 是如何合作的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E4%B8%8B%E4%BE%86%E5%8A%A0%E5%85%A5-Commit-%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-text">接下來加入 Commit 的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Blob-Tree-Commit-%E7%89%A9%E4%BB%B6%E7%9A%84%E7%B5%90%E8%AB%96%EF%BC%9A"><span class="toc-text">Blob, Tree, Commit 物件的結論：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Branch-%E6%98%AF%E4%B8%80%E5%80%8B%E5%8F%AF%E8%AE%8A%E7%9A%84%E6%8C%87%E6%A8%99"><span class="toc-text">Branch 是一個可變的指標</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HEAD-%E6%98%AF-Git-%E4%B8%AD%E7%9A%84%E7%89%B9%E6%AE%8A%E6%8C%87%E6%A8%99%EF%BC%8C%E6%8C%87%E5%90%91%E7%95%B6%E5%89%8D%E6%89%80%E5%9C%A8%E7%9A%84%E5%88%86%E6%94%AF%E6%88%96-commit"><span class="toc-text">HEAD 是 Git 中的特殊指標，指向當前所在的分支或 commit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E8%80%85%E4%B9%8B%E9%96%93%E7%9A%84%E9%97%9C%E4%BF%82%EF%BC%9A"><span class="toc-text">三者之間的關係：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B0%A1%E5%96%AE%E6%8F%90%E4%BA%A4%EF%BC%9A"><span class="toc-text">簡單提交：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E8%A9%B3%E7%B4%B0%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="toc-text">包含詳細描述：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%99%E9%A1%8C%E8%88%87%E6%8F%8F%E8%BF%B0"><span class="toc-text">標題與描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E7%9A%84%E4%BA%8B%E9%A0%85"><span class="toc-text">避免的事項</span></a></li></ol></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Blob-%E5%92%8C-Tree"><span class="toc-text">Blob 和 Tree</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%B2%E5%85%A5%E8%A9%B2%E6%AA%94%E6%A1%88%E5%A4%BE"><span class="toc-text">進入該檔案夾</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-git-ls-tree-%E6%8C%87%E4%BB%A4%E4%BE%86%E5%88%97%E5%87%BA%E6%AA%94%E6%A1%88%E5%92%8C%E5%85%B6%E5%B0%8D%E6%87%89%E7%9A%84-Blob-%E5%92%8C-Tree-%E7%9A%84-SHA-1-%E5%80%BC%EF%BC%8C%E9%80%99%E6%9C%83%E9%A1%AF%E7%A4%BA%E7%95%B6%E5%89%8D%E5%88%86%E6%94%AF%EF%BC%88HEAD%EF%BC%89%E7%9A%84%E6%AA%94%E6%A1%88%E6%B8%85%E5%96%AE%E5%8F%8A%E6%AF%8F%E5%80%8B%E6%AA%94%E6%A1%88%E7%9A%84-Blob-ID"><span class="toc-text">使用 git ls-tree 指令來列出檔案和其對應的 Blob 和 Tree 的 SHA-1 值，這會顯示當前分支（HEAD）的檔案清單及每個檔案的 Blob ID</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%83%B3%E7%9C%8B%E4%B8%80%E5%80%8B-Blob-%E6%AA%94%E6%A1%88%E7%9A%84%E5%85%A7%E5%AE%B9%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-SHA-1-%E5%80%BC%E9%80%B2%E4%B8%80%E6%AD%A5%E6%AA%A2%E6%9F%A5"><span class="toc-text">如果想看一個 Blob 檔案的內容，可以用 SHA-1 值進一步檢查</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%83%B3%E6%9F%A5%E7%9C%8B%E5%AD%90%E7%9B%AE%E9%8C%84%E4%B8%AD%E7%9A%84-Tree%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%94%A8-SHA-1-%E5%80%BC%E9%80%B2%E4%B8%80%E6%AD%A5%E6%AA%A2%E6%9F%A5"><span class="toc-text">如果想查看子目錄中的 Tree，可以用 SHA-1 值進一步檢查</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Blob-%E5%92%8C-Tree-%E6%98%AF%E5%A6%82%E4%BD%95%E5%90%88%E4%BD%9C%E7%9A%84%EF%BC%9F"><span class="toc-text">Blob 和 Tree 是如何合作的？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E4%B8%8B%E4%BE%86%E5%8A%A0%E5%85%A5-Commit-%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-text">接下來加入 Commit 的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Blob-Tree-Commit-%E7%89%A9%E4%BB%B6%E7%9A%84%E7%B5%90%E8%AB%96%EF%BC%9A"><span class="toc-text">Blob, Tree, Commit 物件的結論：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Branch-%E6%98%AF%E4%B8%80%E5%80%8B%E5%8F%AF%E8%AE%8A%E7%9A%84%E6%8C%87%E6%A8%99"><span class="toc-text">Branch 是一個可變的指標</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HEAD-%E6%98%AF-Git-%E4%B8%AD%E7%9A%84%E7%89%B9%E6%AE%8A%E6%8C%87%E6%A8%99%EF%BC%8C%E6%8C%87%E5%90%91%E7%95%B6%E5%89%8D%E6%89%80%E5%9C%A8%E7%9A%84%E5%88%86%E6%94%AF%E6%88%96-commit"><span class="toc-text">HEAD 是 Git 中的特殊指標，指向當前所在的分支或 commit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E8%80%85%E4%B9%8B%E9%96%93%E7%9A%84%E9%97%9C%E4%BF%82%EF%BC%9A"><span class="toc-text">三者之間的關係：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B0%A1%E5%96%AE%E6%8F%90%E4%BA%A4%EF%BC%9A"><span class="toc-text">簡單提交：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E8%A9%B3%E7%B4%B0%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="toc-text">包含詳細描述：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%99%E9%A1%8C%E8%88%87%E6%8F%8F%E8%BF%B0"><span class="toc-text">標題與描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%BF%E5%85%8D%E7%9A%84%E4%BA%8B%E9%A0%85"><span class="toc-text">避免的事項</span></a></li></ol></li></ol>
+    </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>這篇文章是我學習 Git 物件基礎的過程，比較細節的那一種，但盡量白話一點。</p>
+<h2 id="Blob-和-Tree"><a href="#Blob-和-Tree" class="headerlink" title="Blob 和 Tree"></a>Blob 和 Tree</h2><p><strong>Blob</strong> (Binary Large Object) 是 Git 中最基本的物件，專門用來儲存「檔案的內容」。<br>它代表了一個檔案的具體內容，但不包含檔案的名稱、路徑或權限資訊。<br><strong>Tree</strong> 是一種描述「目錄結構」的物件。它負責將檔案、子目錄和它們的相關資訊（如檔名、路徑、權限）組織在一起。 Tree 可以包含多個 Blob（代表檔案）以及其他 Tree（代表子目錄）。</p>
+<p>在 Git 中提交一個檔案時，Git 會把這個檔案的內容轉換成一個 Blob 並儲存起來。每個 Blob 有一個唯一的 SHA-1 雜湊演算法的值，使 Git 可以高效地追蹤檔案的變化；一樣的，當你在 Git 中提交一個檔案時，Git 會為目錄結構創建一個 Tree。這個 Tree 會包含每個檔案的 Blob，以及其他目錄（即子 Tree）。因此，Tree 是遞迴的，可以包含其他 Tree，最終組成完整的專案檔案結構。</p>
+<p>說了這麼多，來看一下他長什麼樣子，當想檢查某個檔案在 Git 中的 Blob 或 Tree 時：</p>
+<h4 id="進入該檔案夾"><a href="#進入該檔案夾" class="headerlink" title="進入該檔案夾"></a>進入該檔案夾</h4><blockquote>
+<p>cd directory</p>
+</blockquote>
+<h4 id="使用-git-ls-tree-指令來列出檔案和其對應的-Blob-和-Tree-的-SHA-1-值，這會顯示當前分支（HEAD）的檔案清單及每個檔案的-Blob-ID"><a href="#使用-git-ls-tree-指令來列出檔案和其對應的-Blob-和-Tree-的-SHA-1-值，這會顯示當前分支（HEAD）的檔案清單及每個檔案的-Blob-ID" class="headerlink" title="使用 git ls-tree 指令來列出檔案和其對應的 Blob 和 Tree 的 SHA-1 值，這會顯示當前分支（HEAD）的檔案清單及每個檔案的 Blob ID"></a>使用 git ls-tree 指令來列出檔案和其對應的 Blob 和 Tree 的 SHA-1 值，這會顯示當前分支（HEAD）的檔案清單及每個檔案的 Blob ID</h4><blockquote>
+<p>git ls-tree HEAD</p>
+</blockquote>
+<h4 id="如果想看一個-Blob-檔案的內容，可以用-SHA-1-值進一步檢查"><a href="#如果想看一個-Blob-檔案的內容，可以用-SHA-1-值進一步檢查" class="headerlink" title="如果想看一個 Blob 檔案的內容，可以用 SHA-1 值進一步檢查"></a>如果想看一個 Blob 檔案的內容，可以用 SHA-1 值進一步檢查</h4><blockquote>
+<p>git cat-file -p <blob-hash></p>
+</blockquote>
+<h4 id="如果想查看子目錄中的-Tree，可以用-SHA-1-值進一步檢查"><a href="#如果想查看子目錄中的-Tree，可以用-SHA-1-值進一步檢查" class="headerlink" title="如果想查看子目錄中的 Tree，可以用 SHA-1 值進一步檢查"></a>如果想查看子目錄中的 Tree，可以用 SHA-1 值進一步檢查</h4><blockquote>
+<p>git ls-tree <tree-hash></p>
+</blockquote>
+<p>我使用一個手邊的 Flutter 專案來測試：</p>
+<p>專案樹：<br><a target="_blank" rel="noopener" href="https://hackmd.io/_uploads/SJdwgEVT0.png">https://hackmd.io/_uploads/SJdwgEVT0.png</a></p>
+<p>表格：</p>
+<table>
+<thead>
+<tr>
+<th>權限模式</th>
+<th>類型</th>
+<th>雜湊值</th>
+<th>檔案&#x2F;目錄名稱</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100644</td>
+<td>blob</td>
+<td>262e5e83783197ede8d66c6789e6c0cce0a51a0d</td>
+<td>.fvmrc</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>blob</td>
+<td>c54174577268583d75a5c0fbaa7ea5844dc3395d</td>
+<td>.gitignore</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>blob</td>
+<td>ebf547f7d519ffe6c923b494e7dfa5af135e6168</td>
+<td>.metadata</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>blob</td>
+<td>3d12b9eda53f0b42e4534fd46ab2423409e73e9b</td>
+<td>README.md</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>blob</td>
+<td>0d2902135caece481a035652d88970c80e29cc7e</td>
+<td>analysis_options.yaml</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>tree</td>
+<td>0724e8f929f6bfd15aff47642f3ebc0fbf62e7fc</td>
+<td>android</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>tree</td>
+<td>b8dadd2aa9b5d8acc805593512d8f68a429d040f</td>
+<td>assets</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>tree</td>
+<td>d3668547fe8eab57de12dc583e9bd9486c8f6980</td>
+<td>fonts</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>tree</td>
+<td>e15501eec5e0aeaa0422a5d3d15d99fa7954a114</td>
+<td>ios</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>tree</td>
+<td>f666e793c405682e546d1fe01902e02728063d5a</td>
+<td>lib</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>blob</td>
+<td>471006abc1bdc0b1bfb9d3f6c2c307661d2c6e76</td>
+<td>pubspec.lock</td>
+</tr>
+<tr>
+<td>100644</td>
+<td>blob</td>
+<td>01a347d2681ee8f62f3a269c2f4128afc957368d</td>
+<td>pubspec.yaml</td>
+</tr>
+<tr>
+<td>040000</td>
+<td>tree</td>
+<td>ebe64144d1783260dce8344583151a661b4d095f</td>
+<td>test</td>
+</tr>
+</tbody></table>
+<p>欄位解釋：</p>
+<ul>
+<li>權限模式：檔案或目錄的權限，如 100644 代表普通檔案，040000 代表目錄。</li>
+<li>類型：類型為 blob 表示檔案內容，tree 表示目錄。</li>
+<li>雜湊值：每個檔案或目錄的唯一 SHA-1 雜湊值。</li>
+<li>檔案&#x2F;目錄名稱：檔案或目錄的名稱。</li>
+</ul>
+<p>圖片：<br><a target="_blank" rel="noopener" href="https://hackmd.io/_uploads/BJLMGaQ6R.png">https://hackmd.io/_uploads/BJLMGaQ6R.png</a></p>
+<h3 id="Blob-和-Tree-是如何合作的？"><a href="#Blob-和-Tree-是如何合作的？" class="headerlink" title="Blob 和 Tree 是如何合作的？"></a>Blob 和 Tree 是如何合作的？</h3><p>Blob 儲存了檔案的內容，而 Tree 組織了目錄結構，並將每個檔案的 Blob 與其檔名、路徑、權限等資訊聯繫起來。<br>一個 Tree 可以包含多個 Blob：假設你有一個目錄，裡面有 3 個檔案，Git 會為這 3 個檔案分別生成 3 個 Blob，然後 Tree 將這 3 個 Blob 組織成一個目錄結構，包含它們的檔名和路徑。<br>Tree 可以嵌套其他 Tree：假設你有一個目錄裡面還有子目錄，Git 會為子目錄創建一個 Tree，並在父目錄的 Tree 中引用它。這樣就能形成遞迴的目錄結構。</p>
+<p>簡單的說法，可以把 Git 中的 Tree 和 Blob 視作一棵樹：<br>Blob 是樹葉（儲存實際的檔案內容），Tree 是樹枝（組織檔案和目錄的結構）。<br>每當有一個目錄時，Git 就創建一個 Tree，Tree 指向它下面的檔案（Blob）和其他子目錄（Tree）。</p>
+<h3 id="接下來加入-Commit-的概念"><a href="#接下來加入-Commit-的概念" class="headerlink" title="接下來加入 Commit 的概念"></a>接下來加入 Commit 的概念</h3><p>回憶一下單向鏈結串列（Singly Linked List），其中每個節點（Node）包含兩個部分：<br>資料部分：存儲該節點的資料（在 Git 中，可以視為提交的內容）。<br>指標部分：指向下一個節點（在 Git 中，這個指標就是指向前一個提交，也就是 parent commit）。</p>
+<p>Git Commit 作為單向鏈結串列，每個 commit 物件 包含以下主要兩個部分：<br>資料：Commit 物件存儲了這次提交的內容，例如提交訊息（對此次提交所做更改的描述）、提交者資訊、日期和時間，以及指向當前提交的 Tree 物件（目錄和檔案的快照）。<br>指向前一個 commit 的鏈結（parent commit）：每個 commit 都指向它的 parent commit，也就是前一次的提交，這相當於在單向鏈結串列中指向下一個節點的指標。<br>由於每個 commit 物件都會指向它的父提交，這就形成了單向的鏈條。最新的提交就是 HEAD 指向的 commit。</p>
+<h3 id="Blob-Tree-Commit-物件的結論："><a href="#Blob-Tree-Commit-物件的結論：" class="headerlink" title="Blob, Tree, Commit 物件的結論："></a>Blob, Tree, Commit 物件的結論：</h3><p>Commit 是每次提交程式碼的節點，它包含一個指向專案狀態（Tree）的鏈結，以及一個指向前一次提交（Parent commit）的鏈結。<br>Tree 物件 是專案的目錄結構，它包含指向檔案內容（Blob）或子目錄（其他 Tree）的鏈結。<br>每次新的提交會創建新的 commit 物件，並且這個 commit 物件會指向當前的 Tree 結構以及前一個 commit。</p>
+<h3 id="Branch-是一個可變的指標"><a href="#Branch-是一個可變的指標" class="headerlink" title="Branch 是一個可變的指標"></a>Branch 是一個可變的指標</h3><p>它指向某個具體的 commit。當你在某個分支上進行新的 commit 時，這個分支會自動向前移動，指向最新的 commit。分支讓你能夠在同一個儲存庫中同時進行多個不同的開發流程，互不干擾。</p>
+<h3 id="HEAD-是-Git-中的特殊指標，指向當前所在的分支或-commit"><a href="#HEAD-是-Git-中的特殊指標，指向當前所在的分支或-commit" class="headerlink" title="HEAD 是 Git 中的特殊指標，指向當前所在的分支或 commit"></a>HEAD 是 Git 中的特殊指標，指向當前所在的分支或 commit</h3><p>例如現在在 main 分支上時，HEAD 的內容會是 ref: refs&#x2F;heads&#x2F;main 的文字。<br>當處於分離的 HEAD 狀態（detached HEAD）時，它會直接指向某個具體的 commit（雜湊值）。<br>當每次切換分支（git checkout）、創建新的分支，或進入分離 HEAD 狀態時，HEAD 檔案的內容會更新以反映當前的狀態。</p>
+<h3 id="三者之間的關係："><a href="#三者之間的關係：" class="headerlink" title="三者之間的關係："></a>三者之間的關係：</h3><p>HEAD 通常指向一個分支，而這個分支指向某個 commit。<br>Branch 只是指向 commit 的指標，而 commit 是對文件系統狀態的記錄。<br>HEAD 和 Branch 的關係是動態的，當你在一個分支上進行新的 commit 時，Branch 和 HEAD 都會隨之更新，指向最新的 commit。</p>
+<hr>
+<p><code>.git</code> 資料夾儲存了所有與儲存庫有關的歷史紀錄、配置文件以及各種管理資訊。每次進行 Git 操作（如 <code>add</code>、<code>commit</code>、<code>push</code> 等）時，<code>.git</code> 資料夾的內容都會發生變化。</p>
+<ol>
+<li><p><strong>git init</strong><br>當執行 <code>git init</code> 時，Git 會在當前目錄下創建一個 <code>.git</code> 資料夾，並生成基本的資料結構，例如 <code>HEAD</code>、<code>config</code>、<code>objects/</code> 等。</p>
+</li>
+<li><p><strong>git add</strong><br>當使用 <code>git add</code> 將文件添加到暫存區時，Git 會根據文件內容創建一個 <code>blob</code> 物件，並將其儲存在 <code>objects/</code> 中。同時，這些文件的狀態會被記錄到 <code>index</code> 檔案中，準備進行提交。<code>index</code> 是暫存區的映像，記錄了所有已經被 <code>git add</code> 的文件狀態。每次你執行 <code>git add</code>，<code>index</code> 會更新，反映暫存區的最新變化。當你進行提交操作（<code>git commit</code>）時，<code>index</code> 的內容會轉換成一個新的提交，並清空暫存區。</p>
+</li>
+<li><p><strong>objects&#x2F;</strong><br><code>objects/</code> 是 Git 儲存庫中最重要的資料夾，存儲了所有的 Git 物件。Git 物件主要分為三種類型：</p>
+<ul>
+<li><strong>Blob</strong>：儲存文件的內容，對應每一個檔案的快照。</li>
+<li><strong>Tree</strong>：儲存目錄結構，記錄文件之間的層級關係。</li>
+<li><strong>Commit</strong>：儲存提交記錄，包括提交訊息、提交時間、作者等資訊，並指向一個 <code>Tree</code> 物件。</li>
+</ul>
+<p>所有這些物件都根據它們的 SHA-1 雜湊值儲存在 <code>objects/</code> 資料夾中，並以二進制方式壓縮存儲。每個物件都使用兩級目錄結構進行命名（例如：<code>objects/aa/bb123...</code>）。</p>
+<p>每次執行 <code>git commit</code> 時，Git 會創建新的 <code>commit</code> 物件、<code>blob</code> 物件和 <code>tree</code> 物件，並儲存在 <code>objects/</code> 中。每當你新增或修改文件，這些變更就會體現為新物件存儲於此。</p>
+</li>
+<li><p><strong>git commit</strong><br>執行 <code>git commit</code> 時，Git 會根據當前暫存區的內容生成一個新的 <code>tree</code> 物件，並創建一個 <code>commit</code> 物件。這些物件會被儲存在 <code>objects/</code> 中，並且 <code>HEAD</code> 和 <code>refs/heads/&lt;branch&gt;</code> 也會更新，指向這次新的提交。</p>
+</li>
+<li><p><strong>遠端設定變化（remote）</strong><br>在 Git 儲存庫操作過程中，當設定遠端（<code>remote</code>）時，<code>.git</code> 資料夾會發生明顯的變化，特別是在 <code>config</code> 檔案中。<code>config</code> 儲存了本地儲存庫的配置，包括遠端 URL、分支的行為以及其他用戶設定。</p>
+<p>當你設定遠端 URL 後，<code>config</code> 檔案會更新，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[remote &quot;origin&quot;]</span><br><span class="line">    url = https://github.com/andy059120/git-practice.git</span><br><span class="line">    fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">[branch &quot;main&quot;]</span><br><span class="line">    remote = origin</span><br><span class="line">    merge = refs/heads/main</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>refs&#x2F;</strong><br><code>refs/</code> 資料夾存儲了分支（<code>heads/</code>）、遠端追蹤分支（<code>remotes/</code>）以及標籤（<code>tags/</code>）的指標。每次創建新分支、切換分支或拉取遠端分支時，<code>refs/</code> 資料夾的內容會更新。例如，當你執行 <code>git fetch</code> 後，<code>refs/remotes/</code> 會更新遠端分支的狀態。</p>
+<ul>
+<li><code>refs/heads/</code>：每個本地分支在這裡都有一個檔案，檔案內容是這個分支指向的提交（commit）的哈希值。</li>
+<li><code>refs/remotes/</code>：儲存遠端追蹤分支的記錄，例如 <code>origin/main</code>。</li>
+<li><code>refs/tags/</code>：存放標籤的指標。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p>commit message 存在的原因：</p>
+<ol>
+<li>記錄做了哪些更動，以及為什麼要做這些更動。</li>
+<li>讓其他人能夠快速地了解異動的內容，方便回溯程式碼已修正錯誤或添加新功能。</li>
+</ol>
+<p>commit message 範例：</p>
+<h4 id="簡單提交："><a href="#簡單提交：" class="headerlink" title="簡單提交："></a>簡單提交：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fix typo in README</span><br></pre></td></tr></table></figure>
+
+<h4 id="包含詳細描述："><a href="#包含詳細描述：" class="headerlink" title="包含詳細描述："></a>包含詳細描述：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">feat: Add user login functionality</span><br><span class="line"></span><br><span class="line">Added user authentication using JWT. Includes login and logout functionality.</span><br><span class="line">This commit also refactors the user model to include authentication tokens.</span><br><span class="line"></span><br><span class="line">Fixes #102</span><br></pre></td></tr></table></figure>
+
+<p>commit message 規範：</p>
+<h3 id="標題與描述"><a href="#標題與描述" class="headerlink" title="標題與描述"></a><strong>標題與描述</strong></h3><ul>
+<li><p><strong>標題</strong>：每個 commit message 應該有一個簡短明確的標題，描述這次提交的目的。</p>
+<ul>
+<li><strong>限制在 50 字元內</strong>：簡潔是關鍵，讓標題能在 Git log 中易於掃描。</li>
+</ul>
+</li>
+<li><p><strong>類型標籤</strong>：可以在標題前添加簡短的類型標籤來說明這次提交的範疇。例如：</p>
+<ul>
+<li><code>feat:</code> (功能) 用於新增功能</li>
+<li><code>fix:</code> (修復) 用於修正 bug</li>
+<li><code>docs:</code> 用於修改文件</li>
+<li><code>refactor:</code> 用於重構現有代碼而不改變功能</li>
+<li><code>test:</code> 用於添加或修改測試</li>
+<li>&#96;style: 格式 (不影響程式碼運行的變動 white-space, formatting, missing semi colons, etc)。</li>
+<li>&#96;perf: 改善效能 (A code change that improves performance)。</li>
+<li>&#96;chore: 建構程序或輔助工具的變動 (maintain)。</li>
+<li>&#96;revert: 撤銷回覆先前的 commit 例如：revert: type(scope): subject (回覆版本：xxxx)。</li>
+<li>例如：<code>feat: Add user authentication</code> 或 <code>fix: Correct issue with login logic</code></li>
+</ul>
+</li>
+<li><p><strong>相關問題或任務 ID</strong>（選填）：如果這次提交解決了一個 issue 或是與某個工作任務相關，可以在描述中提到 issue 編號，這樣便於追溯：</p>
+<ul>
+<li><code>Fixes #123</code> 或 <code>Closes #456</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="避免的事項"><a href="#避免的事項" class="headerlink" title="避免的事項"></a><strong>避免的事項</strong></h3><ul>
+<li><strong>不要用模糊或無意義的訊息</strong>：像是 “Fix bug” 或 “Update file” 無法傳達具體的變更。</li>
+<li><strong>不要在一個 commit 裡包含過多變更</strong>：每個 commit 應該聚焦於一個具體的任務或變更，這樣可以更容易追蹤問題。</li>
+<li><strong>不要使用不必要的大寫或標點符號</strong>：簡潔明瞭的描述即可。</li>
+</ul>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>Andy Chen
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="https://andy059120.github.io/2024/09/17/git_homework/">https://andy059120.github.io/2024/09/17/git_homework/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2024-09-17</p></div> 
+    <div class="post-entry__tags"><a href="/tags/git/" class="post-tags__link button"># git</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2024/07/28/test234/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            測試文字三
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+     
+    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023&nbsp;-&nbsp;2024 <a href="/">Andy Chen</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('true'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
